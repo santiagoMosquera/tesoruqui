@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -23,9 +23,48 @@ export default function BluetoothScreen({ goBack }: Props): React.JSX.Element {
     disconnect,
   } = useBluetooth();
 
+  const [message, setMessage] = useState<string | null>(null);
+
   useEffect(() => {
-    loadBondedDevices();
+    handleReload();
   }, []);
+
+  const handleReload = async () => {
+    try {
+      const result = await loadBondedDevices();
+
+      if (!result || result.length === 0) {
+        setMessage('☁️ No encontré dispositivos emparejados todavía');
+      } else {
+        setMessage('✨ Lista actualizada correctamente');
+      }
+    } catch {
+      setMessage('⚠️ No se pudieron cargar los dispositivos');
+    }
+  };
+
+  const handleConnect = async (item: any) => {
+    try {
+      const ok = await connectToDevice(item);
+
+      if (ok) {
+        setMessage(`💙 Conectado a ${item.name || item.address}`);
+      } else {
+        setMessage('⚠️ No se pudo conectar al dispositivo');
+      }
+    } catch {
+      setMessage('⚠️ Ocurrió un error al intentar conectar');
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      setMessage('💔 Dispositivo desconectado');
+    } catch {
+      setMessage('⚠️ No se pudo desconectar');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -44,12 +83,12 @@ export default function BluetoothScreen({ goBack }: Props): React.JSX.Element {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.purpleButton} onPress={loadBondedDevices}>
+        <TouchableOpacity style={styles.purpleButton} onPress={handleReload}>
           <Text style={styles.buttonText}>🔄 Recargar dispositivos</Text>
         </TouchableOpacity>
 
         {connectedDevice ? (
-          <TouchableOpacity style={styles.resetButton} onPress={disconnect}>
+          <TouchableOpacity style={styles.resetButton} onPress={handleDisconnect}>
             <Text style={styles.buttonText}>💔 Desconectar</Text>
           </TouchableOpacity>
         ) : null}
@@ -69,7 +108,7 @@ export default function BluetoothScreen({ goBack }: Props): React.JSX.Element {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.deviceCard}
-              onPress={() => connectToDevice(item)}
+              onPress={() => handleConnect(item)}
             >
               <Text style={styles.deviceName}>🫧 {item.name || 'Sin nombre'}</Text>
               <Text style={styles.deviceAddress}>{item.address}</Text>
@@ -89,6 +128,19 @@ export default function BluetoothScreen({ goBack }: Props): React.JSX.Element {
         <TouchableOpacity style={styles.mintButton} onPress={goBack}>
           <Text style={styles.buttonText}>🌸 Volver al menú</Text>
         </TouchableOpacity>
+
+        {message && (
+          <View style={styles.overlayBox}>
+            <Text style={styles.overlayText}>{message}</Text>
+
+            <TouchableOpacity
+              style={styles.overlayButton}
+              onPress={() => setMessage(null)}
+            >
+              <Text style={styles.overlayButtonText}>OK 💖</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -120,6 +172,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
+    position: 'relative',
   },
   kawaiiEmoji: {
     textAlign: 'center',
@@ -243,5 +296,36 @@ const styles = StyleSheet.create({
     color: '#9c6b86',
     fontSize: 15,
     fontWeight: '700',
+  },
+  overlayBox: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    top: '35%',
+    backgroundColor: 'rgba(255, 248, 252, 0.96)',
+    borderWidth: 2,
+    borderColor: '#ffcad4',
+    borderRadius: 18,
+    padding: 16,
+    alignItems: 'center',
+  },
+  overlayText: {
+    color: '#5a3550',
+    fontSize: 16,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  overlayButton: {
+    marginTop: 12,
+    backgroundColor: '#ffcad4',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#ff9fba',
+  },
+  overlayButtonText: {
+    color: '#5a3550',
+    fontWeight: '800',
   },
 });

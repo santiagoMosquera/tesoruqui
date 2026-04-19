@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BluetoothProvider, useBluetooth } from './src/bluetooth/BluetoothContext';
 import BluetoothScreen from './src/bluetooth/BluetoothScreen';
 import Game1 from './src/games/Game1';
@@ -21,23 +21,26 @@ type HomeProps = {
 
 function Home({ goTo }: HomeProps): React.JSX.Element {
   const { sendMessage, connectedDevice } = useBluetooth();
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
 
   const handleReset = async () => {
     if (!connectedDevice) {
-      Alert.alert('Bluetooth', 'Primero conecta el Bluetooth');
+      setModalMessage('🔒 Primero conecta el Bluetooth');
       return;
     }
 
     const ok = await sendMessage('0');
+
     if (ok) {
-      Alert.alert('Éxito', 'Reinicio enviado (0)');
+      setModalMessage('✨ Reinicio enviado correctamente (0)');
+    } else {
+      setModalMessage('⚠️ No se pudo enviar el reinicio');
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        
         <Text style={styles.title}>Games</Text>
 
         <TouchableOpacity style={styles.purpleButton} onPress={() => goTo('bluetooth')}>
@@ -46,8 +49,6 @@ function Home({ goTo }: HomeProps): React.JSX.Element {
 
         <Text style={styles.subtitle}>Elige una aventura</Text>
 
-
-       
         <TouchableOpacity style={styles.pinkButton} onPress={() => goTo('game1')}>
           <Text style={styles.buttonText}>🍦 Spacial</Text>
         </TouchableOpacity>
@@ -63,15 +64,27 @@ function Home({ goTo }: HomeProps): React.JSX.Element {
         <TouchableOpacity style={styles.peachButton} onPress={() => goTo('game4')}>
           <Text style={styles.buttonText}>🤯 Mates</Text>
         </TouchableOpacity>
-  
-    <Text style={styles.subtitle}> </Text>
 
-         <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+        <Text style={styles.subtitle}> </Text>
+
+        <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
           <Text style={styles.buttonText}>💖 REINICIAR</Text>
         </TouchableOpacity>
 
-        <Text style={styles.subtitle}>Creado por: QUIEN MAS xD</Text>
+    
 
+        {modalMessage && (
+          <View style={styles.overlayBox}>
+            <Text style={styles.overlayText}>{modalMessage}</Text>
+
+            <TouchableOpacity
+              style={styles.overlayButton}
+              onPress={() => setModalMessage(null)}
+            >
+              <Text style={styles.overlayButtonText}>OK 💖</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -141,6 +154,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
+    position: 'relative',
   },
   kawaiiEmoji: {
     textAlign: 'center',
@@ -196,5 +210,36 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '800',
     textAlign: 'center',
+  },
+  overlayBox: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    top: '35%',
+    backgroundColor: 'rgba(255, 248, 252, 0.96)',
+    borderWidth: 2,
+    borderColor: '#ffcad4',
+    borderRadius: 18,
+    padding: 16,
+    alignItems: 'center',
+  },
+  overlayText: {
+    color: '#5a3550',
+    fontSize: 16,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  overlayButton: {
+    marginTop: 12,
+    backgroundColor: '#ffcad4',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#ff9fba',
+  },
+  overlayButtonText: {
+    color: '#5a3550',
+    fontWeight: '800',
   },
 });

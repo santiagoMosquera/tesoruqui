@@ -98,7 +98,7 @@ export function BluetoothProvider({ children }: { children: React.ReactNode }): 
       const connected = await device.connect();
       if (connected) {
         setConnectedDevice(device);
-        Alert.alert('Conectado', `Conectado a ${device.name || device.address}`);
+        //Alert.alert('Conectado', `Conectado a ${device.name || device.address}`);
         return true;
       }
 
@@ -118,7 +118,7 @@ export function BluetoothProvider({ children }: { children: React.ReactNode }): 
         await connectedDevice.disconnect();
       }
       setConnectedDevice(null);
-      Alert.alert('Bluetooth', 'Desconectado');
+      //Alert.alert('Bluetooth', 'Desconectado');
     } catch (error: any) {
       Alert.alert('Error', `No se pudo desconectar: ${error.message}`);
     }
