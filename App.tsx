@@ -37,7 +37,7 @@ function Home({ goTo }: HomeProps): React.JSX.Element {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.kawaiiEmoji}>૮ ˶ᵔ ᵕ ᵔ˶ ა</Text>
+        
         <Text style={styles.title}>Games</Text>
 
         <TouchableOpacity style={styles.purpleButton} onPress={() => goTo('bluetooth')}>

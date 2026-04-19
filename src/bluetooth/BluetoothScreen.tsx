@@ -29,79 +29,219 @@ export default function BluetoothScreen({ goBack }: Props): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bluetooth ESP32</Text>
+      <View style={styles.card}>
+        <Text style={styles.subtitle}></Text>
 
-      <Text style={styles.status}>
-        Estado:{' '}
-        {connectedDevice
-          ? `Conectado a ${connectedDevice.name || connectedDevice.address}`
-          : 'Sin conexión'}
-      </Text>
+        <Text style={styles.title}>Bluetooth</Text>
+        <Text style={styles.subtitle}>Conecta la caja mágica</Text>
 
-      <TouchableOpacity style={styles.secondaryButton} onPress={loadBondedDevices}>
-        <Text style={styles.buttonText}>Recargar dispositivos emparejados</Text>
-      </TouchableOpacity>
+        <View style={styles.statusCard}>
+          <Text style={styles.statusLabel}>Estado actual</Text>
+          <Text style={styles.statusText}>
+            {connectedDevice
+              ? `💙 Conectado a ${connectedDevice.name || connectedDevice.address}`
+              : '💤 Sin conexión'}
+          </Text>
+        </View>
 
-      {connectedDevice ? (
-        <TouchableOpacity style={styles.disconnectButton} onPress={disconnect}>
-          <Text style={styles.buttonText}>Desconectar</Text>
+        <TouchableOpacity style={styles.purpleButton} onPress={loadBondedDevices}>
+          <Text style={styles.buttonText}>🔄 Recargar dispositivos</Text>
         </TouchableOpacity>
-      ) : null}
 
-      {isConnecting ? <ActivityIndicator size="large" style={{ marginVertical: 16 }} /> : null}
-
-      <FlatList
-        data={devices}
-        keyExtractor={item => item.address}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.deviceCard} onPress={() => connectToDevice(item)}>
-            <Text style={styles.deviceName}>{item.name || 'Sin nombre'}</Text>
-            <Text style={styles.deviceAddress}>{item.address}</Text>
+        {connectedDevice ? (
+          <TouchableOpacity style={styles.resetButton} onPress={disconnect}>
+            <Text style={styles.buttonText}>💔 Desconectar</Text>
           </TouchableOpacity>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No hay dispositivos emparejados</Text>}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
+        ) : null}
 
-      <TouchableOpacity style={styles.backButton} onPress={goBack}>
-        <Text style={styles.buttonText}>Volver al menú</Text>
-      </TouchableOpacity>
+        {isConnecting ? (
+          <View style={styles.loadingBox}>
+            <ActivityIndicator size="large" color="#25eec9" />
+            <Text style={styles.loadingText}>Conectando...</Text>
+          </View>
+        ) : null}
+
+        <Text style={styles.sectionTitle}>Dispositivos emparejados</Text>
+
+        <FlatList
+          data={devices}
+          keyExtractor={item => item.address}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.deviceCard}
+              onPress={() => connectToDevice(item)}
+            >
+              <Text style={styles.deviceName}>🫧 {item.name || 'Sin nombre'}</Text>
+              <Text style={styles.deviceAddress}>{item.address}</Text>
+              <Text style={styles.tapHint}>Toca para conectar</Text>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyBox}>
+              <Text style={styles.emptyEmoji}>☁️</Text>
+              <Text style={styles.emptyText}>No hay dispositivos emparejados</Text>
+            </View>
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        />
+
+        <TouchableOpacity style={styles.mintButton} onPress={goBack}>
+          <Text style={styles.buttonText}>🌸 Volver al menú</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
+const baseButton = {
+  paddingVertical: 14 as const,
+  borderRadius: 18,
+  marginBottom: 12,
+  borderWidth: 2,
+};
+
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f8fafc' },
-  title: { fontSize: 26, fontWeight: '700', marginBottom: 12, color: '#111827' },
-  status: { fontSize: 16, marginBottom: 16, color: '#1f2937' },
-  secondaryButton: {
-    backgroundColor: '#2563eb',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#eefff9',
+  },
+  card: {
+    flex: 1,
+    backgroundColor: '#fff8fc',
+    borderRadius: 28,
+    padding: 24,
+    borderWidth: 3,
+    borderColor: '#c7ffea',
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 6,
+  },
+  kawaiiEmoji: {
+    textAlign: 'center',
+    fontSize: 30,
+    marginBottom: 8,
+    color: '#25eec9',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: '800',
+    textAlign: 'center',
+    color: '#25eec9',
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#9c6b86',
+    marginBottom: 18,
+  },
+  statusCard: {
+    backgroundColor: '#f8fffd',
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#c7ffea',
     padding: 14,
-    borderRadius: 12,
+    marginBottom: 14,
+  },
+  statusLabel: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#7ab6a9',
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  statusText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#5a3550',
+    textAlign: 'center',
+  },
+  purpleButton: {
+    ...baseButton,
+    backgroundColor: '#cdb4ff',
+    borderColor: '#b08cff',
+  },
+  resetButton: {
+    ...baseButton,
+    backgroundColor: '#ffcad4',
+    borderColor: '#ff9fba',
+  },
+  mintButton: {
+    ...baseButton,
+    backgroundColor: '#b8f2e6',
+    borderColor: '#7edfcf',
+    marginTop: 10,
+    marginBottom: 0,
+  },
+  buttonText: {
+    color: '#5a3550',
+    fontSize: 17,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  loadingBox: {
+    alignItems: 'center',
     marginBottom: 10,
   },
-  disconnectButton: {
-    backgroundColor: '#dc2626',
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 16,
+  loadingText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#9c6b86',
+    fontWeight: '700',
   },
-  backButton: {
-    backgroundColor: '#111827',
-    padding: 14,
-    borderRadius: 12,
-    marginTop: 12,
+  sectionTitle: {
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: '800',
+    color: '#25eec9',
+    marginTop: 4,
+    marginBottom: 12,
   },
-  buttonText: { color: '#fff', fontWeight: '700', textAlign: 'center' },
+  listContent: {
+    paddingBottom: 8,
+  },
   deviceCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#ffd7ec',
     padding: 14,
-    borderRadius: 12,
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
   },
-  deviceName: { fontSize: 18, fontWeight: '700', color: '#111827' },
-  deviceAddress: { fontSize: 14, color: '#6b7280', marginTop: 4 },
-  empty: { textAlign: 'center', color: '#6b7280', marginTop: 20 },
+  deviceName: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#5a3550',
+    marginBottom: 4,
+  },
+  deviceAddress: {
+    fontSize: 13,
+    color: '#9c6b86',
+    marginBottom: 6,
+  },
+  tapHint: {
+    fontSize: 12,
+    color: '#25eec9',
+    fontWeight: '800',
+  },
+  emptyBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 24,
+  },
+  emptyEmoji: {
+    fontSize: 28,
+    marginBottom: 6,
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#9c6b86',
+    fontSize: 15,
+    fontWeight: '700',
+  },
 });
