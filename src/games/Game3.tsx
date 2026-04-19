@@ -150,10 +150,10 @@ export default function Game3({ goBack }: Props): React.JSX.Element {
               </Pressable>
             </View>
 
-            <Text style={styles.kawaiiEmoji}>૮ ˶ᵔ ᵕ ᵔ˶ ა</Text>
+
             <Text style={styles.title}>🏀 Basketball</Text>
             <Text style={styles.subtitle}>
-              Toca la pelota cada vez que cambie de lugar
+              Roba el balón!!
             </Text>
 
             <View style={styles.infoRow}>

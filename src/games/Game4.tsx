@@ -236,10 +236,10 @@ export default function Game4({ goBack }: Props): React.JSX.Element {
               </Pressable>
             </View>
 
-            <Text style={styles.kawaiiEmoji}>૮ ˶ᵔ ᵕ ᵔ˶ ა</Text>
+
             <Text style={styles.title}>🤯 Mates</Text>
             <Text style={styles.subtitle}>
-              Resuelve 10 retos del banco de 15
+              A pensar!!!
             </Text>
 
             <View style={styles.infoRow}>

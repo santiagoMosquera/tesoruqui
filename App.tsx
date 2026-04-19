@@ -32,7 +32,7 @@ function Home({ goTo }: HomeProps): React.JSX.Element {
     const ok = await sendMessage('0');
 
     if (ok) {
-      setModalMessage('✨ Reinicio enviado correctamente (0)');
+      setModalMessage('✨ La caja mágica se cierra');
     } else {
       setModalMessage('⚠️ No se pudo enviar el reinicio');
     }

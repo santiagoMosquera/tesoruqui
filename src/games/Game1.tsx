@@ -256,11 +256,11 @@ export default function Game1({ goBack }: Props): React.JSX.Element {
                             </Pressable>
                         </View>
                         <Text style={styles.title}>🍦 Spacial</Text>
-                        <Text style={styles.subtitle}>Cuesta un Dólar cada helado</Text>
+                        <Text style={styles.subtitle}>Come helados.. cada uno te cuesta USD 1 🤪</Text>
 
                         <View style={styles.infoRow}>
                             <View style={styles.infoBox}>
-                                <Text style={styles.infoLabel}>Monedas</Text>
+                                <Text style={styles.infoLabel}>Dinero</Text>
                                 <Text style={styles.infoValue}>🪙 {coins} / {WIN_COINS}</Text>
                             </View>
 
