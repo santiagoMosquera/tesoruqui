@@ -6,6 +6,8 @@ import Game1 from './src/games/Game1';
 import Game2 from './src/games/Game2';
 import Game3 from './src/games/Game3';
 import Game4 from './src/games/Game4';
+import { useBluetooth } from './src/bluetooth/BluetoothContext';
+import { Alert } from 'react-native';
 
 type Screen =
   | 'home'
@@ -20,12 +22,31 @@ type HomeProps = {
 };
 
 function Home({ goTo }: HomeProps): React.JSX.Element {
+  const { sendMessage, connectedDevice } = useBluetooth();
+
+  const handleReset = async () => {
+    if (!connectedDevice) {
+      Alert.alert('Primero conecta el Bluetooth');
+      return;
+    }
+
+    const ok = await sendMessage('0');
+    if (ok) {
+      Alert.alert('Reinicio enviado (0)');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Menú principal</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => goTo('bluetooth')}>
         <Text style={styles.buttonText}>Configurar Bluetooth</Text>
+      </TouchableOpacity>
+
+      {/* 🔴 BOTÓN REINICIAR */}
+      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+        <Text style={styles.buttonText}>REINICIAR</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => goTo('game1')}>
@@ -110,5 +131,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     textAlign: 'center',
-  },
+  },resetButton: {
+  backgroundColor: '#dc2626', // rojo
+  paddingVertical: 14,
+  borderRadius: 12,
+  marginBottom: 12,
+},
 });
