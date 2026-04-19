@@ -43,7 +43,7 @@ const PIPE_SPACING = 260;
 const HITBOX_SIZE = 42;
 const HITBOX_OFFSET = (PLAYER_SIZE - HITBOX_SIZE) / 2;
 
-const WIN_SCORE = 3;
+const WIN_SCORE = 15;
 
 const imgSplit = require('../assets/uno.png');
 const imgFlip = require('../assets/dos.png');

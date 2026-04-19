@@ -17,7 +17,7 @@ type Props = {
 type GameStatus = 'blocked' | 'playing' | 'win';
 type BallPosition = 'left' | 'center' | 'right' | 'up';
 
-const WIN_STEALS = 3;
+const WIN_STEALS = 20;
 const MOVE_INTERVAL = 950;
 
 const gameBackground = require('../assets/goat-giant.png');

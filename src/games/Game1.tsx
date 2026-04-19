@@ -33,7 +33,7 @@ const CELL_SIZE = Math.floor(
 );
 const BOARD_SIZE = CELL_SIZE * GRID_SIZE;
 const TICK = 220;
-const WIN_COINS = 3;
+const WIN_COINS = 10;
 
 const DIRECTIONS: Record<'UP' | 'DOWN' | 'LEFT' | 'RIGHT', Direction> = {
     UP: { x: 0, y: -1 },
